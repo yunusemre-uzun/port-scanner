@@ -1,5 +1,0 @@
-
-INFO:root:Time: 00:13:33.855315 Component: NmapScanner Level: LogLevel.info Message: Nmap version: (7, 80)
-INFO:root:Time: 00:13:33.855935 Component: NmapScanner Level: LogLevel.info Message: Starting sync scan
-INFO:root:Time: 00:13:37.165092 Component: NmapScanner Level: LogLevel.info Message: Thread -1 is started to search -127.0.0.1:1-1000
-INFO:root:Time: 00:13:43.437598 Component: NmapScanner Level: LogLevel.info Message: Thread -1 Nmap scan result: {'127.0.0.1': {'hostnames': [{'name': 'localhost', 'type': 'PTR'}], 'addresses': {'ipv4': '127.0.0.1'}, 'vendor': {}, 'status': {'state': 'up', 'reason': 'conn-refused'}, 'tcp': {631: {'state': 'open', 'reason': 'syn-ack', 'name': 'ipp', 'product': 'CUPS', 'version': '2.3', 'extrainfo': '', 'conf': '10', 'cpe': 'cpe:/a:apple:cups:2.3'}}}}
