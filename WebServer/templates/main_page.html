@@ -1,0 +1,24 @@
+<!doctype html>
+<title>Hello from Flask</title>
+<body>
+    {% if name %}
+    <h1>Hello {{ name }}!</h1>
+    {% else %}
+    <h1>Hello, World!</h1>
+    {% endif %}
+    <form action="/scan" method="POST">
+    <label for="host">Host:</label><br>
+    <input type="text" id="host" name="host"><br>
+    <input type="radio" id="singlePort" name="portSelection" value="singlePort">
+    <label for="singlePort">Single Port</label><br>
+    <input type="radio" id="portRange" name="portSelection" value="portRange">
+    <label for="portRange">Port Range</label>
+        Begin: <input type="text" id="portsBegin" name="portsBegin" size="5">
+        End: <input type="text" id="portsEnd" name="portsEnd" size="5"><br>
+    <input type="radio" id="javascript" name="allPorts" value="allPorts">
+    <label for="allPorts">All Ports</label><br>
+    <label for="host">Arguments:</label><br>
+    <input type="text" id="arguments" name="arguments"><br>
+    <input type="submit" value="Scan">
+    </form> 
+</body>
