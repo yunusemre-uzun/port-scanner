@@ -1,0 +1,1 @@
+/usr/local/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:29092 --topic trendyol_port_scanner --from-beginning
