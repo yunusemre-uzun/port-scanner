@@ -1,0 +1,1 @@
+/usr/local/kafka/bin/kafka-topics.sh --describe --bootstrap-server localhost:29092 --topic trendyol_port_scanner
