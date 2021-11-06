@@ -1,4 +1,4 @@
-from Scanner.nmap_scanner import NmapScanner
+from nmap_scanner import NmapScanner
 import logging
 
 MAX_THREAD_COUNT = 4
