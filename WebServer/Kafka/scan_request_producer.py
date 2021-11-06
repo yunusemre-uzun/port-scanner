@@ -10,5 +10,6 @@ class ScanRequestKafkaProducer:
         return
     
     def sendNewRequest(self, scan_request: ScanRequestModel):
+        # Use partition 1 to send scan request to scanner
         self.__producer.send('trendyol_port_scanner', scan_request.createScanRequest(), b'scan_request', partition=0)
     
