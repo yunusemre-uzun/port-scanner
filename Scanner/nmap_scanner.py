@@ -17,7 +17,7 @@ from typing import List, Dict
 
 class NmapScanner:
     _logger = Logger("NmapScanner")
-    _scan_results = []
+    _scan_results = ScanResult()
     _aysnc_scan_thread_pool = list()
 
     def __init__(self, max_thread_count) -> None:
@@ -50,8 +50,7 @@ class NmapScanner:
         else :
             result = self.__portScannerSync.scan(target, ports)
         
-        
-        self._scan_results.append(ScanResult(result))
+        self._scan_results.addResult(result)
         self._logger.log(LogLevel.info, "Thread {} Nmap scan result: {}".format(threadName, result['scan']))
         return self._scan_results
 
@@ -64,7 +63,7 @@ class NmapScanner:
             else :
                 result = self.__portScannerAsync.scan(target, ports )
             
-            self._scan_results.append(ScanResult(result))
+            self._scan_results.addResult(result)
             self._logger.log(LogLevel.info, "Nmap scan result: {}".format(result['scan']))
 
     def __createThreads(self, target, ports, arguments):
