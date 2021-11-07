@@ -5,7 +5,10 @@ def main():
     with open('Logs/elk.log', mode="w") as file:
         file.write("\n") # erase the log file
     logging.basicConfig(filename='Logs/elk.log', level=logging.INFO)
-    consumer = ElasticSearchKafkaConsumer()
+    try: 
+        consumer = ElasticSearchKafkaConsumer()
+    except:
+        return
     consumer.getMessages()
 
 if __name__ == "__main__":

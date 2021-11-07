@@ -34,9 +34,8 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    networks:
-      - esnet
     restart: always
+  
   kibana:
     image: docker.elastic.co/kibana/kibana:7.14.1
     volumes:
@@ -45,8 +44,6 @@ services:
       - "5601:5601"
     depends_on: 
       - elasticsearch
-    networks: 
-      - esnet
     restart: always
 
   web-server:
@@ -68,9 +65,11 @@ services:
       - "8086:8086"
     volumes:
       - .:/scanner
+    restart: always
   
   elk:
     depends_on:
+      - kafka
       - elasticsearch
     build: ./Elasticsearch
     command: python Elasticsearch/main.py
@@ -78,11 +77,8 @@ services:
       - "8087:8087"
     volumes:
       - .:/elk
-
+    restart: always
 
 volumes: 
     esdata:
         driver: local
-
-networks: 
-    esnet:

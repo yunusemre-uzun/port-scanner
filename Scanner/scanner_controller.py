@@ -14,11 +14,11 @@ class ScannerController(threading.Thread):
         self._producer = KafkaProducer(bootstrap_servers='{}:{}'.format(kafka_url, kafka_port), \
             value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
-    def run(self, target, ports, arguments):
+    def run(self, target, ports, arguments, scan_name):
         result =  self._nmapScanner.scan(target, True, ports, arguments)
-        self.kafkaProducerElasticSearchIndex(result)
+        self.kafkaProducerElasticSearchIndex(result, scan_name)
         return result
     
-    def kafkaProducerElasticSearchIndex(self, result: ScanResult):
+    def kafkaProducerElasticSearchIndex(self, result: ScanResult, scan_name):
         # Use partition 1 to send scan result to elastiksearch
-        self._producer.send('trendyol_port_scanner', result.toJSON(), b'scan_result', partition=1)
+        self._producer.send('trendyol_port_scanner', {'name': scan_name, 'result': result.toJSON()}, b'scan_result', partition=1)

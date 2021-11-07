@@ -19,15 +19,18 @@ def main():
     with open('Logs/portScanner.log', mode="w") as file:
          file.write("\n") # erase the log file
     logging.basicConfig(filename='Logs/portScanner.log', level=logging.INFO)
-    logger.log(LogLevel.info, "Scanner connecting kafka on {}:{}".format(kafka_url, kafka_port))
-    consumer = KafkaConsumer(bootstrap_servers='{}:{}'.format(kafka_url, kafka_port), value_deserializer=lambda v: json.loads(v.decode('utf-8')))
+    try :
+        consumer = KafkaConsumer(bootstrap_servers='{}:{}'.format(kafka_url, kafka_port), value_deserializer=lambda v: json.loads(v.decode('utf-8')))
+    except:
+        return
     consumer.assign([TopicPartition('trendyol_port_scanner', 0)])
     for msg in consumer:
         scanner = ScannerController(MAX_THREAD_COUNT, kafka_url, kafka_port)
+        scan_name = msg.value['name']
         host = msg.value["host"]
         ports = msg.value["ports"]
         arguments = msg.value["arguments"]
-        scanner.run(host, ports, arguments)
+        scanner.run(host, ports, arguments, scan_name)
     #result = nmapScanner.scan('127.0.0.1', False, '1-1000')
     #return result
 
