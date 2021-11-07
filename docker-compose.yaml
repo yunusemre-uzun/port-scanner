@@ -23,10 +23,66 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes: 
+      - esdata:/usr/shre/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - esnet
+    restart: always
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.1
+    volumes:
+      - ./kibana.yml/:/usr/share/kibana/config/kibana.yml
+    ports: 
+      - "5601:5601"
+    depends_on: 
+      - elasticsearch
+    networks: 
+      - esnet
+    restart: always
+
   web-server:
-        build: .
-        command: python WebServer/main.py
-        ports:
-          - "8085:8085"
-        volumes:
-          - .:/web-server
+    depends_on:
+      - kafka
+    build: .
+    command: python WebServer/main.py
+    ports:
+      - "8085:8085"
+    volumes:
+      - .:/web-server
+  
+  scanner:
+    depends_on:
+      - kafka
+    build: ./Scanner
+    command: python Scanner/main.py kafka 9092
+    ports:
+      - "8086:8086"
+    volumes:
+      - .:/scanner
+  
+  elk:
+    depends_on:
+      - elasticsearch
+    build: ./Elasticsearch
+    command: python Elasticsearch/main.py
+    ports:
+      - "8087:8087"
+    volumes:
+      - .:/elk
+
+
+volumes: 
+    esdata:
+        driver: local
+
+networks: 
+    esnet:
