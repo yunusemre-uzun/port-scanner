@@ -22,4 +22,33 @@
     <input type="text" id="arguments" name="arguments"><br>
     <input type="submit" value="Scan">
     </form> 
+    <div class="vertical-menu">
+        {% for result in scan_results %}
+        <a href="{{result[1]}}">{{ result[0] }}</a> 
+        {% endfor %}
+      </div>
 </body>
+
+<style>
+    .vertical-menu {
+        height: 1000px;
+        overflow-y: auto;
+    }
+    
+    .vertical-menu a {
+      background-color: #eee;
+      color: black;
+      display: block;
+      padding: 12px;
+      text-decoration: none;
+    }
+    
+    .vertical-menu a:hover {
+      background-color: #ccc;
+    }
+    
+    .vertical-menu a.active {
+      background-color: #04AA6D;
+      color: white;
+    }
+</style>
