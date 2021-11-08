@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class ScanRequestModel:
     def __init__(self, host, port_selection, ports_begin, ports_end, arguments) -> None:
         self._host = host
@@ -15,4 +17,4 @@ class ScanRequestModel:
             return "{}-{}".format(1, (1 << 16) - 1)
     
     def createScanRequest(self) -> str:
-        return {'host': self._host, 'ports': self.__getPortsString(), 'arguments': self._arguments}
+        return {'name': datetime.now().strftime("%H:%M:%S") + '-' + self._host,'host': self._host, 'ports': self.__getPortsString(), 'arguments': self._arguments}
