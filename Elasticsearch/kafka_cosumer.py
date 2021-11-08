@@ -2,6 +2,7 @@ import logging
 from kafka import KafkaConsumer, TopicPartition
 from elasticsearch import Elasticsearch
 import json
+from uuid import uuid4
 
 class ElasticSearchKafkaConsumer:
     def __init__(self) -> None:
@@ -18,7 +19,8 @@ class ElasticSearchKafkaConsumer:
         else:
             return False
     
-    def _create_index(self, index_name='recipes'):
+    def _create_index(self):
+        index_name = "scan_results"
         created = False
         # index settings
         settings = {
@@ -30,18 +32,15 @@ class ElasticSearchKafkaConsumer:
                 "members": {
                     "dynamic": "strict",
                     "properties": {
-                        "title": {
+                        "name": {
                             "type": "text"
                         },
-                        "submitter": {
+                        "result": {
+                            "type": "nested"
+                        },
+                        "error": {
                             "type": "text"
-                        },
-                        "description": {
-                            "type": "text"
-                        },
-                        "calories": {
-                            "type": "integer"
-                        },
+                        }
                     }
                 }
             }
@@ -50,17 +49,25 @@ class ElasticSearchKafkaConsumer:
             if not self._elk.indices.exists(index_name):
                 # Ignore 400 means to ignore "Index Already Exist" error.
                 self._elk.indices.create(index=index_name, ignore=400, body=settings)
-                logging.info('new index created with name{}'.format(index_name))
+                logging.info('new index created with name {}'.format(index_name))
             created = True
         except Exception as ex:
-            logging.error(ex)
+            raise ex
         finally:
             return created
 
-    def getMessages(self) -> KafkaConsumer:
+
+    def getMessages(self):
         for message in self._consumer:
             if self.__connectionCheckElasticsearch():
-                self._create_index()
+                try:
+                    self._create_index()
+                    logging.info("adding message with value: {}".format(message.value))
+                    response = self._elk.index(index='scan_result', id=uuid4(), body=json.dumps(message.value))
+                    logging.info(response)
+                except Exception as ex:
+                    logging.error(ex)
+                    continue
             else:
                 logging.error("Can not connect elasticsearch server")
             logging.info(message)
