@@ -1,4 +1,4 @@
-from kafka_cosumer import ElasticSearchKafkaConsumer
+from Kafka.kafka_cosumer import ElasticSearchKafkaConsumer
 import logging
 
 def main():

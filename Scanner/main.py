@@ -30,7 +30,8 @@ def main():
         host = msg.value["host"]
         ports = msg.value["ports"]
         arguments = msg.value["arguments"]
-        scanner.run(host, ports, arguments, scan_name)
+        os_scan = msg.value["os_scan"]
+        scanner.run(host, ports, arguments, scan_name, os_scan)
     #result = nmapScanner.scan('127.0.0.1', False, '1-1000')
     #return result
 

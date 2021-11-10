@@ -1,5 +1,5 @@
 from time import sleep
-from logging import error
+from logging import error, root
 from typing import Dict, List, Text
 
 from nmap.nmap import PortScannerAsync
@@ -18,7 +18,6 @@ from typing import List, Dict
 class NmapScanner:
     _logger = Logger("NmapScanner")
     _scan_results = ScanResult()
-    _aysnc_scan_thread_pool = list()
 
     def __init__(self, max_thread_count) -> None:
         try:
@@ -29,26 +28,30 @@ class NmapScanner:
             raise error
         self.__max_number_of_threads = max_thread_count
         self.__getNmapVersionOnSystem()
+        self._aysnc_scan_thread_pool = list()
     
     def __getNmapVersionOnSystem(self):
         self.nmapVersion = self.__portScannerSync.nmap_version()
         self._logger.log(LogLevel.info, "Nmap version: {}".format(self.nmapVersion))
 
 
-    def scan(self, target, isMultithreaded = False, ports = None, arguments = None):
-        if isMultithreaded and self.__max_number_of_threads > 1:
+    def scan(self, target, isMultithreaded = False, ports = None, arguments = None, os_scan = False):
+        if isMultithreaded and self.__max_number_of_threads > 1 and not os_scan:
             self._logger.log(LogLevel.info, "Starting multithreaded scan")
             return self.__initiateMultithreadedScan(target, ports, arguments)
         else:
             self._logger.log(LogLevel.info, "Starting sync scan")
-            return self.__syncScan("-1", target, ports, arguments)
+            return self.__syncScan("-1", target, ports, arguments, os_scan)
 
-    def __syncScan(self, threadName, target, ports = None, arguments = None):
+    def __syncScan(self, threadName, target, ports = None, arguments = None, os_scan = False):
         self._logger.log(LogLevel.info, "Thread {} is started to search -{}:{}".format(threadName, target, ports))
         if arguments != None:
             result = self.__portScannerSync.scan(target, ports, arguments)
         else :
-            result = self.__portScannerSync.scan(target, ports)
+            if os_scan:
+                result = self.__portScannerSync.scan(target, ports, "-O")
+            else:
+                result = self.__portScannerSync.scan(target, ports)
         
         self._scan_results.addResult(result)
         self._logger.log(LogLevel.info, "Thread {} Nmap scan result: {}".format(threadName, result['scan']))
@@ -77,6 +80,7 @@ class NmapScanner:
                 thread.start()
             for thread in self._aysnc_scan_thread_pool:
                 thread.join()
+            self._aysnc_scan_thread_pool = []
             return self._scan_results
         else:
             return self.__syncScan("-1", target, ports, arguments)

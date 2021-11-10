@@ -6,3 +6,4 @@ kafka-python==2.0.2
 MarkupSafe==2.0.1
 python-nmap==0.7.1
 Werkzeug==2.0.2
+elasticsearch==7.15.1

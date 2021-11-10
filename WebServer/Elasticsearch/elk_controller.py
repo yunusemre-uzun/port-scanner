@@ -6,7 +6,7 @@ class ElasticsearchController:
         self._elk = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
     
     def getAllScanResults(self):
-        all_results = self._elk.search(index="scan_result", query={"match_all": {}}, stored_fields=[], _source=["name"])["hits"]["hits"]
+        all_results = self._elk.search(index="scan_result", query={"match_all": {}}, stored_fields=[], _source=["name"], size= 100)["hits"]["hits"]
         scan_result_ids = []
         for result in all_results:
             print(result)
