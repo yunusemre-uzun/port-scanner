@@ -28,6 +28,8 @@ class ScanResult:
     def __addScanResultToHost(self, host, scan_result, command=None):
         if command is not None:
             self._host_dict[host]['command'].append(command)
+        if scan_result["osmatch"] is not None and scan_result["osmatch"] != []:
+            self._host_dict[host]['osmatch'] = scan_result["osmatch"]
         if 'tcp' in scan_result:
             if 'tcp' in self._host_dict[host]:
                 self._host_dict[host]['tcp'].update(self.__getOpenPorts(scan_result['tcp'], 'tcp') )
