@@ -1,10 +1,12 @@
 import json
 import logging
 from typing import Dict
+from Models.syncronized_function import synchronized
 
 class ScanResult:
     _host_dict  = {} # Dict<host, Dict<tcp/udp, Dict>>
 
+    @synchronized
     def addResult(self, result):
         logging.info("Scan result: {}".format(result))
         command = result['nmap']['command_line']
