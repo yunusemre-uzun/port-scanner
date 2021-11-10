@@ -16,8 +16,11 @@ class ScannerController(threading.Thread):
         self._producer = KafkaProducer(bootstrap_servers='{}:{}'.format(kafka_url, kafka_port), \
             value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
-    def run(self, target, ports, arguments, scan_name):
-        result =  self._nmapScanner.scan(target, True, ports, arguments)
+    def run(self, target, ports, arguments, scan_name, os_scan = False):
+        if os_scan:
+            ports = None
+            arguments = None
+        result =  self._nmapScanner.scan(target, True, ports, arguments, os_scan)
         self.kafkaProducerElasticSearchIndex(result, scan_name)
         return result
     

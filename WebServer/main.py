@@ -35,7 +35,11 @@ def createScanRequestModel():
     ports_begin = request.form['portsBegin']
     ports_end = request.form['portsEnd']
     arguments = request.form['arguments']
-    return ScanRequestModel(host, port_selection, ports_begin, ports_end, arguments)
+    if 'os_scan' in request.form:
+        os_scan = request.form['os_scan']
+    else:
+        os_scan = False
+    return ScanRequestModel(host, port_selection, ports_begin, ports_end, arguments, os_scan)
 
 if __name__ == '__main__':
 	app.run(host="0.0.0.0", debug=True, port=8085)
