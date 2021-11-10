@@ -22,7 +22,8 @@ class ScanResult:
             if host in self._host_dict:
                 self.__addScanResultToHost(host, scan_result[host], command)
             else:
-                self.__addNewHostWithScanResult(host, scan_result[host], scan_started, command)
+                status = scan_result[host]['status']
+                self.__addNewHostWithScanResult(host, scan_result[host], scan_started, command, status)
                 
     def __addScanResultToHost(self, host, scan_result, command=None):
         if command is not None:
@@ -38,8 +39,8 @@ class ScanResult:
             else:
                 self._host_dict[host]['udp'] = self.__getOpenPorts(scan_result['udp'], 'udp') 
     
-    def __addNewHostWithScanResult(self, host, scan_result, scan_started, command):
-        self._host_dict[host] = {"scan_started": scan_started, "command": [command]}
+    def __addNewHostWithScanResult(self, host, scan_result, scan_started, command, status):
+        self._host_dict[host] = {"scan_started": scan_started, "command": [command], "status":  status}
         self.__addScanResultToHost(host, scan_result)
 
     def __getOpenPorts(self, ports_dict, port_type):
@@ -51,10 +52,12 @@ class ScanResult:
     
     def toJSON(self):
         ret_dict = self._host_dict.copy()
+        """
         for host, result in self._host_dict.items():
             if ('tcp' not in result or result["tcp"] == {}) and\
                  ('udp' not in result or result["udp"] == {}):
                 del ret_dict[host]
+        """
         return ret_dict
     
     def onResponseSent(self):
