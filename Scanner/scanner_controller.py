@@ -23,7 +23,6 @@ class ScannerController(threading.Thread):
     def run(self):
         result =  self._nmapScanner.scan(True, *self._args)
         self.kafkaProducerElasticSearchIndex(result, self._scan_name)
-        sleep(10)
         return result
     
     def kafkaProducerElasticSearchIndex(self, result: ScanResult, scan_name):
