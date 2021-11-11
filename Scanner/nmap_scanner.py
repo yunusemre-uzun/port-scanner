@@ -35,7 +35,15 @@ class NmapScanner:
         self._logger.log(LogLevel.info, "Nmap version: {}".format(self.nmapVersion))
 
 
-    def scan(self, target, isMultithreaded = False, ports = None, arguments = None, os_scan = False):
+    def scan(self, isMultithreaded = False, *args):
+        target = args[0]
+        ports = args[1]
+        arguments = args[2]
+        os_scan = args[3]
+
+        if os_scan:
+            ports = None
+            arguments = None
         if isMultithreaded and self.__max_number_of_threads > 1 and not os_scan:
             self._logger.log(LogLevel.info, "Starting multithreaded scan")
             return self.__initiateMultithreadedScan(target, ports, arguments)
