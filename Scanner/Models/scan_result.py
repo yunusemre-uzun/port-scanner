@@ -52,7 +52,7 @@ class ScanResult:
                 ret[key] = value
         return ret
     
-    def addResult(self, host, open_ports, scan_started):
+    def addFinalResult(self, host, open_ports, scan_started):
         self._host_dict[host] = {"tcp": [open_ports], "scan_started": scan_started}
 
     def toJSON(self):

@@ -11,7 +11,7 @@ class PortScanner:
     def __init__(self, host: str, ports: str) -> None:
         self.ports_to_be_scanned = ports
         self.host_to_be_scanned = host
-        self.open_ports = []
+        self.open_ports = {}
         self._createQueue()
         self._createThreads()
 
@@ -39,7 +39,7 @@ class PortScanner:
             result = s.connect_ex((self.host_to_be_scanned,port))
             if result ==0:
                 logging.info("Port {} is open for host {}".format(port, self.host_to_be_scanned))
-                self.open_ports.append(port)
+                self.open_ports[port] = {"state": "open"}
             s.close()
         except socket.gaierror:
             logging.error("Hostname could not be resolved. Exiting")
@@ -61,5 +61,5 @@ class PortScanner:
     
     def _createResult(self):
         scan_result = ScanResult()
-        scan_result.addResult(self.host_to_be_scanned, self.open_ports, self._scan_started)
+        scan_result.addFinalResult(self.host_to_be_scanned, self.open_ports, self._scan_started)
         return scan_result
