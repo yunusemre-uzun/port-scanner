@@ -22,7 +22,7 @@ class ScannerController(threading.Thread):
         
 
     def run(self):
-        port_scanner = PortScanner("127.0.0.1", "1-10000")
+        port_scanner = PortScanner(self._args[0], self._args[1])
         result = port_scanner.scan()
         #result =  self._nmapScanner.scan(True, *self._args)
         self.kafkaProducerElasticSearchIndex(result, self._scan_name)
