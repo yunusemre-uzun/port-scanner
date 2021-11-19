@@ -5,6 +5,7 @@ from time import sleep
 
 from kafka import KafkaProducer
 from Models.scan_result import ScanResult
+from port_scanner import PortScanner
 
 from nmap_scanner import NmapScanner
 
@@ -21,7 +22,11 @@ class ScannerController(threading.Thread):
         
 
     def run(self):
-        result =  self._nmapScanner.scan(True, *self._args)
+        if self._args[3]:
+            result =  self._nmapScanner.scan(True, *self._args)
+        else:
+            port_scanner = PortScanner(self._args[0], self._args[1])
+            result = port_scanner.scan()
         self.kafkaProducerElasticSearchIndex(result, self._scan_name)
         return result
     

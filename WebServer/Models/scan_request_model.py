@@ -20,4 +20,4 @@ class ScanRequestModel:
             return "{}-{}".format(1, (1 << 16) - 1)
     
     def createScanRequest(self) -> str:
-        return {'name': datetime.now().strftime("%H:%M:%S") + '-' + self._host,'host': self._host, 'ports': self.__getPortsString(), 'arguments': self._arguments, 'os_scan': self._os_scan}
+        return {'name': datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '-' + self._host,'host': self._host, 'ports': self.__getPortsString(), 'arguments': self._arguments, 'os_scan': self._os_scan}
